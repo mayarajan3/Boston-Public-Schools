@@ -110,6 +110,35 @@
         display: flex;
       }
 
+      .normalize-check {
+        position: absolute;
+        right: 35%;
+        top: 67px;
+      }
+
+
+
+
+    .tooltip {
+      background-color: gray;
+      font-size: 12px;
+      padding: 5px;
+      color: white;
+    }
+
+    .tooltip::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: gray transparent transparent transparent;
+    }
+
+
+
       html,
       body {
         height: 100%;
@@ -126,6 +155,10 @@
     <div>
       <div style="display:flex">
       <svg id="scatter"></svg>
+      <div class="normalize-check">
+        <input type="checkbox" id="normalize" name="normalize" onclick="changeNormalize();">
+        <label for="normalize">Normalize</label><br>
+      </div>
       <div id="chart-container"></div>
 
 
@@ -165,42 +198,50 @@
 
       function rScale(radius, dataset) {
         let scaled = ((radius - d3.min(dataset, d => d[2]))/(d3.max(dataset, d => d[2]) - d3.min(dataset, d => d[2])))*10;
-        return scaled < 2 ? 2 : scaled;
+        return scaled < 4 ? 4 : scaled;
       }
 
     // Defining color data
-      var valueLevel = 'total';
+      var valueLevel = 'teacher_funding_percent';
       var clickedCircle = null; // highlighted circle
-      var previousValue = null;
+      var previousValue = {};
+      var normalized = false;
+
+      var allColors = {
+        'total': 'black',
+        'school_activity': "#28587B",
+        'school_support': "#5B5B89",
+        "central_admin": "#684756"
+      }
       var colors = {
-        "teacher_funding_percent": "red",
-        "targeted_percent": "blue",
-        "admin_percent": "green",
-        "whole_funding_percent": "blue",
-        "equipment_percent": "red",
-        "special_percent": "purple",
-        "benefits_percent": "green",
-        "transportation_percent": "purple",
-        "other_percent": "green",
-        "central_admin_percent": "blue"
+        "teacher_funding_percent": allColors.school_activity,
+        "targeted_percent": allColors.school_activity,
+        "admin_percent": allColors.school_activity,
+        "whole_funding_percent": allColors.school_activity,
+        "equipment_percent": allColors.school_activity,
+        "special_percent": allColors.school_support,
+        "benefits_percent": allColors.school_support,
+        "transportation_percent": allColors.school_support,
+        "other_percent": allColors.school_support,
+        "central_admin_percent": allColors.central_admin
       };
 
       const data = {
             nodes: [
-                { "id": "Total" , "category": 0, "color": "blue"}, //0
-                { "id": "School Activity Total", "category": 1, "color": "purple"}, //1
-                { "id": "School Support Total", "category": 1, "color": "purple"}, //2
-                { "id": "Central Administration Total", "category": 1, "color": "purple"}, //3
-                { "id": "Teachers" , "category": 2, "color": "purple"}, //5
-                { "id": "Targeted" , "category": 2, "color": "purple"}, //6
-                { "id": "Admin", "category": 2, "color": "purple" }, //7
-                { "id": "Whole" , "category": 2, "color": "purple"}, //8
-                { "id": "Equipment" , "category": 2, "color": "purple"}, //9
-                { "id": "Special", "category": 3, "color": "purple" }, //10
-                { "id": "Benefits", "category": 3, "color": "purple" }, //11
-                { "id": "Transportation", "category": 3, "color": "purple" }, //12
-                { "id": "Other", "category": 3, "color": "purple" }, //13
-                { "id": "Central Administration", "category": 4, "color": "purple" }, //14
+                { "id": "Total" , "category": 0, "color": allColors.total}, //0
+                { "id": "School Activity Total", "category": 1, "color": allColors.school_activity}, //1
+                { "id": "School Support Total", "category": 1, "color": allColors.school_support}, //2
+                { "id": "Central Administration Total", "category": 1, "color": allColors.central_admin}, //3
+                { "id": "Teachers" , "category": 2, "color": allColors.school_activity}, //5
+                { "id": "Targeted" , "category": 2, "color": allColors.school_activity}, //6
+                { "id": "Admin", "category": 2, "color": allColors.school_activity }, //7
+                { "id": "Whole" , "category": 2, "color": allColors.school_activity}, //8
+                { "id": "Equipment" , "category": 2, "color": allColors.school_activity}, //9
+                { "id": "Special", "category": 3, "color": allColors.school_support }, //10
+                { "id": "Benefits", "category": 3, "color": allColors.school_support }, //11
+                { "id": "Transportation", "category": 3, "color": allColors.school_support }, //12
+                { "id": "Other", "category": 3, "color": allColors.school_support }, //13
+                { "id": "Central Administration", "category": 4, "color":allColors.central_admin }, //14
             ],
             links: [
                 { source: 0, target: 1, value: jsonData['total']["school_activity_total"]},
@@ -225,13 +266,16 @@
         var dataset1 = [];
         var barDataset = [];
         var totalValues  = [];
+        var barDatasetNormalized = [];
         for (const x in jsonData) {
             if (!isNaN(parseFloat(jsonData[x]['grad'])) && !isNaN(parseFloat(jsonData[x]['teacher_funding_percent']))) {
                 if (parseFloat(jsonData[x]['grad']) > 50 && parseFloat(jsonData[x]['teacher_funding_percent']) > 0) {
                     const temp = [parseFloat(jsonData[x]['grad']), parseFloat(jsonData[x]['teacher_funding_percent']), parseFloat(jsonData[x]['teacher_funding']), parseFloat(jsonData[x]['total']), x];
                     dataset1.push(temp);
-                    const barTemp = [parseFloat(jsonData[x]['teacher_funding']), parseFloat(jsonData[x]['total'])];
+                    const barTemp = [parseFloat(jsonData[x]['teacher_funding']), parseFloat(jsonData[x]['total'])-parseFloat(jsonData[x]['teacher_funding'])];
+                    const barTempNormalized = [parseFloat(jsonData[x][valueLevel]), 1-parseFloat(jsonData[x][valueLevel])];
                     barDataset.push(barTemp);
+                    barDatasetNormalized.push(barTempNormalized);
                 }
             }
 
@@ -283,17 +327,17 @@
 
         // Step 6
         g.append("g")
+        .attr("class", "axis-bottom")
          .attr("transform", "translate(0," + height + ")")
          .call(d3.axisBottom(xScale));
 
         g.append("g")
+        .attr("class", "axis-left")
          .call(d3.axisLeft(yScale));
 
         const regression = ss.linearRegression(dataset1);
         const slope = regression.m;
         const intercept = regression.b;
-        console.log(slope);
-        console.log(yScale(intercept));
 
 
         // Create SVG element for regression line
@@ -308,6 +352,12 @@
         .attr("stroke-width", 2)
         .attr("stroke", 'black');
 
+        d3.select("body").append('div')
+        .attr('id', function (d, i) { return "tooltip";})
+        .attr("class", "tooltip")
+        .attr('style', 'position: absolute; left: 88.5035px; top: 23.9753px; opacity: 0; background-color:gray; border-radius: 5px; padding: 5px; font-size: 12px')
+        .style("transform", "translate(" + 100 + "px," + 100 + "px)")
+        .text("testing")
         // Step 7
         svg.append('g')
         .selectAll("dot")
@@ -318,13 +368,37 @@
         .attr("cy", function (d) { return yScale(d[1]); } )
         .attr("r", function (d) { return rScale(d[2], dataset1); } )
         .attr("transform", "translate(" + 100 + "," + 100 + ")")
-        .style("fill", "#CC0000")
+        .style("fill", colors[valueLevel])
         .on("click", function(d) {
             sankeyChange(d);
             clickedCircle = d;
             svg.selectAll("circle").style("fill", colors[valueLevel]);
             d3.select(this).style("fill", "black");
-        });
+        })
+        .on('mouseover', function(d,i) {
+           var circleX = +d3.select(this).attr("cx");
+            var circleY = +d3.select(this).attr("cy");
+
+            d3.select('#tooltip').text(d[4])
+
+            // Calculate the position for the tooltip
+            var tooltipX = circleX - d3.select('#tooltip').node().offsetWidth / 2;
+            var tooltipY = circleY - d3.select('#tooltip').node().offsetHeight / 2 - 30;
+
+            // Set the position and text of the tooltip
+            d3.select('#tooltip').style("left", tooltipX + "px")
+                .style("top", tooltipY + "px")
+                .style("opacity", 1);
+
+            // Show the tooltip with a smooth fade-in effect
+            //d3.select('#tooltip').transition().duration(200).style('opacity', 1).text(d[4])
+         })
+         .on('mouseout', function(d, i) {
+         d3.select('#tooltip').style('opacity', 0)
+         })
+         // .on('mousemove', function(d, i) {
+         // d3.select('#tooltip').style('left', (d3.event.pageX+10) + 'px').style('top', (d3.event.pageY-30) + 'px')
+         // })
 
 
 
@@ -348,11 +422,11 @@
           .append('g')
           .attr('transform', `translate(${marginBar.left},${marginBar.top})`);
 
-        const xScaleBar = d3.scaleLinear()
-        .domain([0, d3.max(barDataset, d => d[1])]) // Adjust domain
+        var xScaleBar = d3.scaleLinear()
+        .domain([0, d3.max(barDataset, d => d[0] + d[1])]) // Adjust domain
         .range([0, widthBar]);
 
-        const yScaleBar = d3.scaleBand()
+        var yScaleBar = d3.scaleBand()
         .domain(barDataset.map((d, i) => `${dataset1[i][4]}`))
         .range([0, heightBar])
         .padding(0.1);
@@ -380,7 +454,7 @@
          .attr('x', (d, i, j) => {
             if (i == 0) {
               previousValue = d;
-              return 0;
+              return xScaleBar(0);
             } else {
               return xScaleBar(previousValue);
             }
@@ -390,11 +464,7 @@
             return 0;
           })
           .attr('width', (d, i) => {
-            if (i > 0) {
-              return xScaleBar(d-previousValue)
-            } else {
-              return xScaleBar(d)
-            }
+            return xScaleBar(d)
           })
           .attr('height', yScaleBar.bandwidth())
           .attr('fill', (d, i) => {
@@ -405,8 +475,8 @@
             }
           });
 
-          const xAxis = d3.axisBottom(xScaleBar);
-          const yAxis = d3.axisLeft(yScaleBar);
+          var xAxis = d3.axisBottom(xScaleBar);
+          var yAxis = d3.axisLeft(yScaleBar);
 
           svgBar.append('g')
             .attr('class', 'x-axis')
@@ -418,6 +488,7 @@
             .call(yAxis);
 
           svgBar.append('text')
+            .attr('class', 'axis-label')
             .attr('x', widthBar/2 + 20)
             .attr('y', heightBar - 15 + 50)
             .attr('text-anchor', 'middle')
@@ -542,13 +613,16 @@
                 }
                 dataset1 = [];
                 barDataset = [];
+                barDatasetNormalized = [];
                 for (const x in jsonData) {
                     if (!isNaN(parseFloat(jsonData[x]['grad'])) && !isNaN(parseFloat(jsonData[x][valueLevel]))) {
                         if (parseFloat(jsonData[x]['grad']) > 50 && parseFloat(jsonData[x][valueLevel]) > 0) {
                           const temp = [parseFloat(jsonData[x]['grad']), parseFloat(jsonData[x][valueLevel]), parseFloat(jsonData[x][valueLevel.replace("_percent", "")]),  parseFloat(jsonData[x]['total']), x];
                           dataset1.push(temp);
-                          const barTemp = [parseFloat(jsonData[x][valueLevel.replace("_percent", "")]), parseFloat(jsonData[x]['total'])];
+                          const barTemp = [parseFloat(jsonData[x][valueLevel.replace("_percent", "")]), parseFloat(jsonData[x]['total'])-parseFloat(jsonData[x][valueLevel.replace("_percent", "")])];
+                          const barTempNormalized = [parseFloat(jsonData[x][valueLevel]), 1-parseFloat(jsonData[x][valueLevel])];
                           barDataset.push(barTemp);
+                          barDatasetNormalized.push(barTempNormalized);
                         }
                     }
                 }
@@ -562,8 +636,6 @@
                 // .transition() // Apply transitions for smooth update
                 // .duration(1000)
                 .attr("cx", function(d) {
-                  console.log(d);
-                  console.log(xScale(d[0]))
                   return xScale(d[0]); })
                 .attr("cy", function(d) { return yScale(d[1]); })
                 .attr("r", function(d) { return rScale(d[2], dataset1); });
@@ -582,15 +654,18 @@
                 .attr("stroke-width", 2)
                 .attr("stroke", 'black');
 
+                g.selectAll(".axis-bottom")
+                 .call(d3.axisBottom(xScale));
+
+                g.selectAll(".axis-left")
+                 .call(d3.axisLeft(yScale));
+
 
               // Replace bar chart data
               let groups1 = svgBar.selectAll('.bar-group')
-              .data(barDataset)
+              .data(normalized ? barDatasetNormalized : barDataset)
               .attr('class', 'bar-group')
               .attr('transform', (d, i) => {
-                console.log(d);
-                console.log(i);
-                console.log(dataset1[i][4]);
                 return `translate(0,${yScaleBar(`${dataset1[i][4]}`)})`
               });
 
@@ -600,8 +675,9 @@
                 .duration(1000)
                 .attr('x', (d, i, j) => {
                   if (i == 0) {
+
                     previousValue = d;
-                    return 0;
+                    return xScaleBar(0);
                   } else {
                     return xScaleBar(previousValue);
                   }
@@ -610,11 +686,7 @@
                   return 0;
                 })
                 .attr('width', (d, i) => {
-                  if (i > 0) {
-                    return xScaleBar(d-previousValue)
-                  } else {
-                    return xScaleBar(d)
-                  }
+                  return xScaleBar(d)
                 })
                 .attr('height', yScaleBar.bandwidth())
                 .attr('fill', (d, i) => {
@@ -676,6 +748,75 @@
             .attr("fill", d => d.color);
 
             document.getElementById("school-name").innerText = d[4];
+        }
+
+        function changeNormalize() {
+          console.log("here");
+          if (normalized) {
+            normalized = false;
+
+          } else {
+            normalized = true;
+          }
+
+
+          svgBar.selectAll('.axis-label').text(() => {
+            console.log(normalized);
+            return normalized ? "Funding Amount (%)" : "Funding Amount ($)"});
+          let groups1 = svgBar.selectAll('.bar-group')
+              .data(normalized ? barDatasetNormalized : barDataset)
+              .attr('class', 'bar-group')
+              .attr('transform', (d, i) => {
+                return `translate(0,${yScaleBar(`${dataset1[i][4]}`)})`
+              });
+
+              xScaleBar = d3.scaleLinear()
+                .domain([0, normalized ? 1 : d3.max(barDataset, d => d[0] + d[1])]) // Adjust domain
+                .range([0, widthBar]);
+
+                yScaleBar = d3.scaleBand()
+                .domain(barDataset.map((d, i) => `${dataset1[i][4]}`))
+                .range([0, heightBar])
+                .padding(0.1);
+
+              groups1.selectAll('rect')
+                .data(d => d)
+                .transition()
+                .duration(1000)
+                .attr('x', (d, i, j) => {
+                  if (i == 0) {
+                    previousValue = d;
+                    return 0;
+                  } else {
+                    return xScaleBar(previousValue);
+                  }
+                })
+                .attr('y', (d, i) => {
+                  return 0;
+                })
+                .attr('width', (d, i) => {
+                  return xScaleBar(d);
+                })
+                .attr('height', yScaleBar.bandwidth())
+                .attr('fill', (d, i) => {
+                  if (i == 0) {
+                    return colors[valueLevel]
+                  }  else {
+                    return 'gray';
+                  }
+                });
+
+
+
+                xAxis = d3.axisBottom(xScaleBar);
+                yAxis = d3.axisLeft(yScaleBar);
+
+                svgBar.selectAll('.x-axis')
+                  .attr('transform', `translate(0, ${heightBar})`)
+                  .call(xAxis);
+
+                svgBar.selectAll('.y-axis')
+                  .call(yAxis);
         }
 
 
