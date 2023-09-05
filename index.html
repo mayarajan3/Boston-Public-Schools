@@ -754,14 +754,14 @@
                   });
 
                 svgSankey.selectAll("path")
-            .attr("d", d3.sankeyLinkHorizontal())
-            .attr("stroke-opacity", function(d) {
-              if (d.target.id == nodeLevel || d.target.id == groupLevel) {
-                return 0.4;
-              } else {
-                return 0.2;
-              }
-             });
+                .attr("d", d3.sankeyLinkHorizontal())
+                .attr("stroke-opacity", function(d) {
+                  if (d.target.id == nodeLevel || d.target.id == groupLevel) {
+                    return 0.4;
+                  } else {
+                    return 0.2;
+                  }
+                 });
 
         }
 
