@@ -579,7 +579,14 @@
           .append('text')
           .attr('transform', `translate(${marginSankey.left},${marginSankey.top})`)
           .style("font-size", "11px")
-          .attr('class', 'node-label') // Apply a class to style the labels with CSS
+          .attr('class', 'node-label')
+          .style("font-weight", function(d) {
+            if (d.id == nodeLevel) {
+              return 700;
+            } else {
+              return 400;
+            }
+          }) // Apply a class to style the labels with CSS
           .attr('x', d => {
             if (d.id == "School Activity Total" || d.id == "School Support Total" || d.id == "Central Administration Total") {
               return d.x1 - 20;
@@ -754,12 +761,20 @@
                   });
 
                 svgSankey.selectAll("path")
-                .attr("d", d3.sankeyLinkHorizontal())
                 .attr("stroke-opacity", function(d) {
                   if (d.target.id == nodeLevel || d.target.id == groupLevel) {
                     return 0.4;
                   } else {
                     return 0.2;
+                  }
+                 });
+
+                svgSankey.selectAll(".node-label")
+                .style("font-weight", function(d) {
+                  if (d.id == nodeLevel) {
+                    return 700;
+                  } else {
+                    return 400;
                   }
                  });
 
