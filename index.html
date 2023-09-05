@@ -207,6 +207,8 @@
       var clickedCircle = null; // highlighted circle
       var previousValue = {};
       var normalized = false;
+      var nodeLevel = "Teachers and Paraprofessionals";
+      var groupLevel = "School Activity Total";
 
       var allColors = {
         'total': 'black',
@@ -555,13 +557,19 @@
         .attr("fill", "none")
         .attr('transform', `translate(${marginSankey.left},${marginSankey.top})`)
         .attr("stroke", "#000")
-        .attr("stroke-opacity", 0.2)
         .selectAll("path")
         .data(data.links)
         .enter().
         append("path")
           .attr("d", d3.sankeyLinkHorizontal())
-          .attr("stroke-width", function(d) { return d.width; });
+          .attr("stroke-width", function(d) { return d.width; })
+          .attr("stroke-opacity", function(d) {
+            if (d.target.id == nodeLevel || d.target.id == groupLevel) {
+                return 0.4;
+              } else {
+                return 0.2;
+              }
+          });
 
           const nodeLabels = svgSankey
           .selectAll('.node-label') // Select or create a class for node labels
@@ -609,26 +617,48 @@
 
 
         function topicChange(event) {
+
+
                 if (event.value == "teachers") {
                   valueLevel = 'teacher_funding_percent';
+                  nodeLevel = "Teachers and Paraprofessionals";
+                  groupLevel = "School Activity Total";
                 } else if (event.value == "targeted") {
                   valueLevel = 'targeted_percent';
+                  nodeLevel = "Targeted Student Supports";
+                  groupLevel = "School Activity Total";
                 } else if (event.value == "admin") {
                   valueLevel = 'admin_percent';
+                  nodeLevel = "School Leadership and Administration";
+                  groupLevel = "School Activity Total";
                 } else if (event.value == "whole") {
                   valueLevel = 'whole_funding_percent';
+                  nodeLevel = "Whole School Supports";
+                  groupLevel = "School Activity Total";
                 } else if (event.value == "equipment") {
                   valueLevel = 'equipment_percent';
+                  groupLevel = "School Activity Total";
+                  nodeLevel = "Equipment";
                 } else if (event.value == "special") {
                   valueLevel = 'special_percent';
+                  nodeLevel = "Special Education";
+                  groupLevel = "School Support Total";
                 } else if (event.value == "benefits") {
                   valueLevel = 'benefits_percent';
+                  nodeLevel = "Benefits";
+                  groupLevel = "School Support Total";
                 } else if (event.value == "transportation") {
                   valueLevel = 'transportation_percent';
+                  nodeLevel = "Transportation and Ops";
+                  groupLevel = "School Support Total";
                 } else if (event.value == "other") {
                   valueLevel = 'other_percent';
+                  nodeLevel = "Other";
+                  groupLevel = "School Support Total";
                 } else if (event.value == "central_admin") {
                   valueLevel = 'central_admin_percent';
+                  nodeLevel = "Central Administration";
+                  groupLevel = "Central Administration";
                 }
                 dataset1 = [];
                 barDataset = [];
@@ -717,11 +747,21 @@
                 });
 
                 svg.selectAll("circle").style("fill", d=> {
-                    if (d[4] == clickedCircle[4]) {
+                    if (clickedCircle && d[4] == clickedCircle[4]) {
                       return "black";
                     }
                     return colors[valueLevel]
                   });
+
+                svgSankey.selectAll("path")
+            .attr("d", d3.sankeyLinkHorizontal())
+            .attr("stroke-opacity", function(d) {
+              if (d.target.id == nodeLevel || d.target.id == groupLevel) {
+                return 0.4;
+              } else {
+                return 0.2;
+              }
+             });
 
         }
 
