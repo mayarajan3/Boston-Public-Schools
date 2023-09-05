@@ -114,6 +114,7 @@
       .normalize-check {
         position: absolute;
         top: 102px;
+        display: flex;
       }
 
 
@@ -156,15 +157,15 @@
       <div style="display:flex">
       <svg id="scatter"></svg>
       <div class="normalize-check" id="normalize-check">
-        <input type="checkbox" id="normalize" name="normalize" onclick="changeNormalize();">
-        <label style="font-size: 13px" for="normalize">Normalize</label><br>
+        <input type="checkbox" id="normalize" name="normalize" style="margin: 0px; margin-right:5px" onclick="changeNormalize();">
+        <label style="font-size: 13px; margin-top:2px" for="normalize">Normalize</label><br>
       </div>
       <div id="chart-container"></div>
 
 
       </div>
-      <div style="position:absolute; top:53%; left: 5%;">
-            <label for="topic">Choose a funding topic:</label>
+      <div style="position:absolute; top:52.5%; left: 5.5%;">
+            <label for="topic" style="font-size:13px">Choose type of budget allocation:</label>
 
             <select name="topic" id="topic" style="width:250px;" onchange="topicChange(this);">
               <option value="teachers">Teachers and Paraprofessionals</option>
@@ -311,7 +312,6 @@
 
         // X label
         svg.append('text')
-
         .attr('x', width/2 + 100)
         .attr('y', height - 15 + marginScatter.top + 45)
         .attr('text-anchor', 'middle')
@@ -320,12 +320,13 @@
         .text('Graduation Rate (%)');
 
         // Y label
+        let heightTranslate = height + 40;
         svg.append('text')
         .attr('text-anchor', 'middle')
-        .attr('transform', 'translate(55,' + height + ')rotate(-90)')
+        .attr('transform', 'translate(55,' + heightTranslate + ')rotate(-90)')
         .style('font-family', 'Helvetica')
         .style('font-size', 12)
-        .text('Percentage of Funding');
+        .text('Budget Percentage');
 
         // Step 6
         g.append("g")
@@ -418,7 +419,7 @@
         const heightBar = window.innerHeight*0.57 - marginBar.top - marginBar.bottom;
 
         let leftPx = window.innerWidth*0.43 + marginBar.left;
-        let topPx = marginBar.top - 28;
+        let topPx = marginBar.top - 24;
 
         document.getElementById("normalize-check").setAttribute("style", "left: " + leftPx + "px; top: " + topPx + "px")
 
@@ -501,7 +502,7 @@
             .attr('text-anchor', 'middle')
             .style('font-family', 'Helvetica')
             .style('font-size', 12)
-            .text('Funding Amount ($)');
+            .text('Budget Amount ($)');
 
          svgBar.append('text')
           .attr('x', widthBar/2 - 15)
@@ -509,7 +510,7 @@
           .attr('text-anchor', 'middle')
           // .style('font-family', 'Helvetica')
           .style('font-size', 20)
-          .text('Funding Amount');
+          .text('Budget Amount');
 
 
 
@@ -785,7 +786,7 @@
 
 
           svgBar.selectAll('.axis-label').text(() => {
-            return normalized ? "Funding Amount (%)" : "Funding Amount ($)"});
+            return normalized ? "Budget Amount (%)" : "Budget Amount ($)"});
           let groups1 = svgBar.selectAll('.bar-group')
               .data(normalized ? barDatasetNormalized : barDataset)
               .attr('class', 'bar-group')
