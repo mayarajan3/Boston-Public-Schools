@@ -165,7 +165,7 @@
 
       </div>
       <div style="position:absolute; top:52.5%; left: 5.5%;">
-            <label for="topic" style="font-size:13px">Choose type of budget allocation:</label>
+            <label for="topic" style="font-size:13px">Choose type of budget data:</label>
 
             <select name="topic" id="topic" style="width:250px;" onchange="topicChange(this);">
               <option value="teachers">Teachers and Paraprofessionals</option>
@@ -198,8 +198,8 @@
 
 
       function rScale(radius, dataset) {
-        let scaled = ((radius - d3.min(dataset, d => d[2]))/(d3.max(dataset, d => d[2]) - d3.min(dataset, d => d[2])))*10;
-        return scaled < 4 ? 4 : scaled;
+        let scaled = ((radius - d3.min(dataset, d => d[2]))/(d3.max(dataset, d => d[2]) - d3.min(dataset, d => d[2])))*7 + 4;
+        return scaled;
       }
 
     // Defining color data
@@ -514,7 +514,7 @@
             .attr('text-anchor', 'middle')
             .style('font-family', 'Helvetica')
             .style('font-size', 12)
-            .text('Budget Amount ($)');
+            .text('Budget Amount ($ Per Pupil)');
 
          svgBar.append('text')
           .attr('x', widthBar/2 - 15)
