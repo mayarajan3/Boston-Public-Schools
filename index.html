@@ -857,7 +857,7 @@
 
 
           svgBar.selectAll('.axis-label').text(() => {
-            return normalized ? "Budget Amount (%)" : "Budget Amount ($)"});
+            return normalized ? "Budget Amount (%)" : "Budget Amount ($ Per Pupil)"});
           let groups1 = svgBar.selectAll('.bar-group')
               .data(normalized ? barDatasetNormalized : barDataset)
               .attr('class', 'bar-group')
