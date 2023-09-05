@@ -150,7 +150,7 @@
   </head>
   <body>
     <div style="text-align:center; position: absolute; top:1%; margin: 0 auto; left: 0; right: 0">
-    <h2 style="margin-top:30px">Boston Public School Data</h2>
+    <h2 style="margin-top:30px">Boston Public Schools Data</h2>
   </div>
     <div style="text-align: center;">
     <div>
@@ -377,6 +377,14 @@
             clickedCircle = d;
             svg.selectAll("circle").style("fill", colors[valueLevel]);
             d3.select(this).style("fill", "black");
+            svgBar.selectAll('.tick').style("font-weight", (d) => {
+
+              if (clickedCircle && d == clickedCircle[4]) {
+                return 700;
+              } else {
+                return 400;
+              }
+            })
         })
         .on('mouseover', function(d,i) {
            var circleX = +d3.select(this).attr("cx");
@@ -448,6 +456,8 @@
           return `translate(0,${yScaleBar(`${dataset1[i][4]}`)})`
         });
 
+
+
         groups.selectAll('rect')
           .data(d => d)
           .enter()
@@ -494,6 +504,8 @@
           svgBar.append('g')
             .attr('class', 'y-axis')
             .call(yAxis);
+
+
 
           svgBar.append('text')
             .attr('class', 'axis-label')
@@ -705,7 +717,7 @@
                 });
 
                 svg.selectAll("circle").style("fill", d=> {
-                    if (d == clickedCircle) {
+                    if (d[4] == clickedCircle[4]) {
                       return "black";
                     }
                     return colors[valueLevel]
