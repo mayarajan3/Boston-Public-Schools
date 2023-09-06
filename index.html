@@ -273,7 +273,7 @@
         for (const x in jsonData) {
             if (!isNaN(parseFloat(jsonData[x]['grad'])) && !isNaN(parseFloat(jsonData[x]['teacher_funding_percent']))) {
                 if (parseFloat(jsonData[x]['grad']) > 50 && parseFloat(jsonData[x]['teacher_funding_percent']) > 0) {
-                    const temp = [parseFloat(jsonData[x]['grad']), parseFloat(jsonData[x]['teacher_funding_percent']), parseFloat(jsonData[x]['teacher_funding']), parseFloat(jsonData[x]['total']), x];
+                    const temp = [parseFloat(jsonData[x]['grad']), parseFloat(jsonData[x]['teacher_funding_percent'])*100, parseFloat(jsonData[x]['teacher_funding']), parseFloat(jsonData[x]['total']), x];
                     dataset1.push(temp);
                     const barTemp = [parseFloat(jsonData[x]['teacher_funding']), parseFloat(jsonData[x]['total'])-parseFloat(jsonData[x]['teacher_funding'])];
                     const barTempNormalized = [(parseFloat(jsonData[x][valueLevel]))*100, 100-(parseFloat(jsonData[x][valueLevel]))*100];
@@ -295,8 +295,9 @@
             height = svg.attr("height") - marginScatter.top - marginScatter.bottom //200
 
         // Scatter plot axes
+        let range = d3.max(dataset1, d => d[1]) - d3.min(dataset1, d => d[1])
         xScale = d3.scaleLinear().domain([d3.min(dataset1, d => d[0]), d3.max(dataset1, d => d[0])]).range([0, width]),
-        yScale = d3.scaleLinear().domain([d3.min(dataset1, d => d[1]), d3.max(dataset1, d => d[1])]).range([height, 0]);
+        yScale = yScale = d3.scaleLinear().domain([(d3.min(dataset1, d => d[1])-range*0.1) < 0 ? 0 : (d3.min(dataset1, d => d[1])-range*0.1), d3.max(dataset1, d => d[1])+range*0.1]).range([height, 0]);
 
         var g = svg.append("g")
             .attr("transform", "translate(" + marginScatter.left + "," + marginScatter.top + ")");
@@ -328,7 +329,7 @@
         .attr('transform', 'translate(55,' + heightTranslate + ')rotate(-90)')
         .style('font-family', 'Helvetica')
         .style('font-size', 12)
-        .text('Budget Percentage');
+        .text('Budget Amount (%)');
 
         // Step 6
         g.append("g")
@@ -677,7 +678,7 @@
                 for (const x in jsonData) {
                     if (!isNaN(parseFloat(jsonData[x]['grad'])) && !isNaN(parseFloat(jsonData[x][valueLevel]))) {
                         if (parseFloat(jsonData[x]['grad']) > 50 && parseFloat(jsonData[x][valueLevel]) > 0) {
-                          const temp = [parseFloat(jsonData[x]['grad']), parseFloat(jsonData[x][valueLevel]), parseFloat(jsonData[x][valueLevel.replace("_percent", "")]),  parseFloat(jsonData[x]['total']), x];
+                          const temp = [parseFloat(jsonData[x]['grad']), parseFloat(jsonData[x][valueLevel])*100, parseFloat(jsonData[x][valueLevel.replace("_percent", "")]),  parseFloat(jsonData[x]['total']), x];
                           dataset1.push(temp);
                           const barTemp = [parseFloat(jsonData[x][valueLevel.replace("_percent", "")]), parseFloat(jsonData[x]['total'])-parseFloat(jsonData[x][valueLevel.replace("_percent", "")])];
                           const barTempNormalized = [parseFloat(jsonData[x][valueLevel])*100, 100-(parseFloat(jsonData[x][valueLevel])*100)];
@@ -688,8 +689,9 @@
                 }
 
 
-                xScale = d3.scaleLinear().domain([d3.min(dataset1, d => d[0]), d3.max(dataset1, d => d[0])]).range([0, width]),
-              yScale = d3.scaleLinear().domain([d3.min(dataset1, d => d[1]), d3.max(dataset1, d => d[1])]).range([height, 0]);
+              let range = d3.max(dataset1, d => d[1]) - d3.min(dataset1, d => d[1])
+              xScale = d3.scaleLinear().domain([d3.min(dataset1, d => d[0]), d3.max(dataset1, d => d[0])]).range([0, width]),
+              yScale = d3.scaleLinear().domain([(d3.min(dataset1, d => d[1])-range*0.1) < 0 ? 0 : (d3.min(dataset1, d => d[1])-range*0.1), d3.max(dataset1, d => d[1])+range*0.1]).range([height, 0]);
 
               svg.selectAll("circle")
                 .data(dataset1)
