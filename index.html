@@ -331,7 +331,7 @@
         .text('Graduation Rate (%)');
 
         // Y label
-        let heightTranslate = height + 40;
+        let heightTranslate = (height/2) + marginScatter.top;
         svg.append('text')
         .attr('text-anchor', 'middle')
         .attr('transform', 'translate(65,' + heightTranslate + ')rotate(-90)')
