@@ -140,7 +140,6 @@
 
     #select-container {
       position:absolute;
-      left: 5.5%;
     }
 
 
@@ -170,7 +169,7 @@
 
       </div>
       <div id="select-container">
-            <label for="topic" style="font-size:13px">Choose type of budget data:</label>
+            <label for="topic" style="font-size:13px">Choose budget category:</label>
 
             <select name="topic" id="topic" style="width:250px;" onchange="topicChange(this);">
               <option value="teachers">Teachers and Paraprofessionals</option>
@@ -319,7 +318,8 @@
         .text('Graduation Rate');
 
         let selectTop = height + marginScatter.top + 45;
-        document.getElementById("select-container").setAttribute("style", "top:" + selectTop + "px");
+        let selectLeft = marginScatter.left - 15;
+        document.getElementById("select-container").setAttribute("style", "top:" + selectTop + "px; left: " + selectLeft + "px");
 
         // X label
         svg.append('text')
