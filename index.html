@@ -212,7 +212,7 @@
       var previousValue = {};
       var normalized = false;
       var nodeLevel = "Teachers and Paraprofessionals";
-      var groupLevel = "School Activity Total";
+      var groupLevel = "School Activities Total";
 
       var allColors = {
         'total': 'black',
@@ -236,8 +236,8 @@
       const data = {
             nodes: [
                 { "id": "Total" , "category": 0, "color": allColors.total}, //0
-                { "id": "School Activity Total", "category": 1, "color": allColors.school_activity}, //1
-                { "id": "School Support Total", "category": 1, "color": allColors.school_support}, //2
+                { "id": "School Activities Total", "category": 1, "color": allColors.school_activity}, //1
+                { "id": "School Supports Total", "category": 1, "color": allColors.school_support}, //2
                 { "id": "Central Administration Total", "category": 1, "color": allColors.central_admin}, //3
                 { "id": "Teachers and Paraprofessionals" , "category": 2, "color": allColors.school_activity}, //5
                 { "id": "Targeted Student Supports" , "category": 2, "color": allColors.school_activity}, //6
@@ -601,7 +601,7 @@
             }
           }) // Apply a class to style the labels with CSS
           .attr('x', d => {
-            if (d.id == "School Activity Total" || d.id == "School Support Total" || d.id == "Central Administration Total") {
+            if (d.id == "School Activities Total" || d.id == "School Supports Total" || d.id == "Central Administration Total") {
               return d.x1 - 20;
             }
             return d.x0 < width / 2 ? d.x1 - 20 : d.x0 + 20
@@ -609,7 +609,7 @@
           .attr('y', d => (d.y1 + d.y0) / 2) // Center the label vertically within the node
           .attr('dy', '0.35em') // Adjust vertical alignment
           .attr('text-anchor', d => {
-            if (d.id == "School Activity Total" || d.id == "School Support Total" || d.id == "Central Administration Total") {
+            if (d.id == "School Activities Total" || d.id == "School Supports Total" || d.id == "Central Administration Total") {
               return 'end';
             }
           return d.x0 < width / 2 ? 'end' : 'start'
@@ -642,39 +642,39 @@
                 if (event.value == "teachers") {
                   valueLevel = 'teacher_funding_percent';
                   nodeLevel = "Teachers and Paraprofessionals";
-                  groupLevel = "School Activity Total";
+                  groupLevel = "School Activities Total";
                 } else if (event.value == "targeted") {
                   valueLevel = 'targeted_percent';
                   nodeLevel = "Targeted Student Supports";
-                  groupLevel = "School Activity Total";
+                  groupLevel = "School Activities Total";
                 } else if (event.value == "admin") {
                   valueLevel = 'admin_percent';
                   nodeLevel = "School Leadership and Administration";
-                  groupLevel = "School Activity Total";
+                  groupLevel = "School Activities Total";
                 } else if (event.value == "whole") {
                   valueLevel = 'whole_funding_percent';
                   nodeLevel = "Whole School Supports";
-                  groupLevel = "School Activity Total";
+                  groupLevel = "School Activities Total";
                 } else if (event.value == "equipment") {
                   valueLevel = 'equipment_percent';
-                  groupLevel = "School Activity Total";
+                  groupLevel = "School Activities Total";
                   nodeLevel = "Materials, Equipment, and Supplies";
                 } else if (event.value == "special") {
                   valueLevel = 'special_percent';
                   nodeLevel = "Special Education";
-                  groupLevel = "School Support Total";
+                  groupLevel = "School Supports Total";
                 } else if (event.value == "benefits") {
                   valueLevel = 'benefits_percent';
                   nodeLevel = "Benefits";
-                  groupLevel = "School Support Total";
+                  groupLevel = "School Supports Total";
                 } else if (event.value == "transportation") {
                   valueLevel = 'transportation_percent';
                   nodeLevel = "Transportation and Ops";
-                  groupLevel = "School Support Total";
+                  groupLevel = "School Supports Total";
                 } else if (event.value == "other") {
                   valueLevel = 'other_percent';
                   nodeLevel = "Other";
-                  groupLevel = "School Support Total";
+                  groupLevel = "School Supports Total";
                 } else if (event.value == "central_admin") {
                   valueLevel = 'central_admin_percent';
                   nodeLevel = "Central Administration";
@@ -840,7 +840,7 @@
             .duration(1000)
             .attr('transform', `translate(${marginSankey.left},${marginSankey.top})`)
             .attr('x', d => {
-              if (d.id == "School Activity Total" || d.id == "School Support Total" || d.id == "Central Administration Total") {
+              if (d.id == "School Activities Total" || d.id == "School Supports Total" || d.id == "Central Administration Total") {
                 return d.x1 - 20;
               }
               return d.x0 < width / 2 ? d.x1 - 20 : d.x0 + 20
@@ -848,7 +848,7 @@
             .attr('y', d => (d.y1 + d.y0) / 2) // Center the label vertically within the node
             .attr('dy', '0.35em') // Adjust vertical alignment
             .attr('text-anchor', d => {
-              if (d.id == "School Activity Total" || d.id == "School Support Total" || d.id == "Central Administration Total") {
+              if (d.id == "School Activities Total" || d.id == "School Supports Total" || d.id == "Central Administration Total") {
                 return 'end';
               }
             return d.x0 < width / 2 ? 'end' : 'start'
