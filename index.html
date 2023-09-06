@@ -334,7 +334,7 @@
         let heightTranslate = height + 40;
         svg.append('text')
         .attr('text-anchor', 'middle')
-        .attr('transform', 'translate(55,' + heightTranslate + ')rotate(-90)')
+        .attr('transform', 'translate(65,' + heightTranslate + ')rotate(-90)')
         .style('font-family', 'Helvetica')
         .style('font-size', 12)
         .text('Budget Amount (%)');
@@ -804,13 +804,13 @@
                 { source: 0, target: 2, value: jsonData[d[4]]["school_support_total"]},
                 { source: 0, target: 3, value: jsonData[d[4]]["central_admin_total"]},
 
-                { source: 1, target: 4, value: jsonData[d[4]]["teacher_funding_percent"]}, // Source: Node A, Target: Node B
+                { source: 1, target: 4, value: jsonData[d[4]]["teacher_funding_percent"]},
                 { source: 1, target: 5, value: jsonData[d[4]]["targeted_percent"]},
                 { source: 1, target: 6, value: jsonData[d[4]]["admin_percent"]},
-                { source: 1, target: 7, value: jsonData[d[4]]["whole_funding_percent"]}, // Source: Node A, Target: Node B
+                { source: 1, target: 7, value: jsonData[d[4]]["whole_funding_percent"]},
                 { source: 1, target: 8, value: jsonData[d[4]]["equipment_percent"]},
                 { source: 2, target: 9, value: jsonData[d[4]]["special_percent"]},
-                { source: 2, target: 10, value: jsonData[d[4]]["benefits_percent"]}, // Source: Node A, Target: Node B
+                { source: 2, target: 10, value: jsonData[d[4]]["benefits_percent"]},
                 { source: 2, target: 11, value: jsonData[d[4]]["transportation_percent"]},
                 { source: 2, target: 12, value: jsonData[d[4]]["other_percent"]},
                 { source: 3, target: 13, value: jsonData[d[4]]["central_admin_percent"]},
