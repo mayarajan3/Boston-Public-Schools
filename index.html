@@ -553,13 +553,13 @@
         var sankeyWidth = window.innerWidth*0.9;
         var sankeyHeight = window.innerHeight*0.28;
         var svgSankey = d3.select("#sankey").attr("width", sankeyWidth).attr("height", sankeyHeight);
-        var marginSankey = {left: 200, right: 50, top: 0};
+        var marginSankey = {left: 210, right: 50, top: 0};
 
         // Create a Sankey layout
         const sankeyLayout = d3.sankey()
             .nodeWidth(15)
             .nodePadding(10)
-            .extent([[1, 1], [sankeyWidth - 400, sankeyHeight - 6]]); // Adjust the extent based on your SVG dimensions
+            .extent([[1, 1], [sankeyWidth - 420, sankeyHeight - 6]]); // Adjust the extent based on your SVG dimensions
 
         // Generate the Sankey diagram data
         const { nodes, links } = sankeyLayout(data);
