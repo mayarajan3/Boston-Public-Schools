@@ -317,14 +317,14 @@
         .style('font-size', 20)
         .text('Graduation Rate');
 
-        let selectTop = height + marginScatter.top + 50;
+        let selectTop = height + marginScatter.top + 48;
         let selectLeft = marginScatter.left - 15;
         document.getElementById("select-container").setAttribute("style", "top:" + selectTop + "px; left: " + selectLeft + "px");
 
         // X label
         svg.append('text')
         .attr('x', width/2 + 100)
-        .attr('y', height - 15 + marginScatter.top + 50)
+        .attr('y', height - 15 + marginScatter.top + 48)
         .attr('text-anchor', 'middle')
         .style('font-family', 'Helvetica')
         .style('font-size', 12)
